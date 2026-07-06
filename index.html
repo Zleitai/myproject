@@ -1,150 +1,176 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <title>TODO v4</title>
+<meta charset="UTF-8">
+<title>TODO v5</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f8;
-        }
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    transition: 0.3s;
+}
 
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+.dark {
+    background: #1e1e1e;
+    color: white;
+}
 
-        h1 {
-            text-align: center;
-        }
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
 
-        input {
-            width: 60%;
-            padding: 10px;
-        }
+.dark .container {
+    background: #2c2c2c;
+}
 
-        button {
-            padding: 10px;
-            cursor: pointer;
-            margin: 3px;
-        }
+h1 {
+    text-align: center;
+}
 
-        li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
+input {
+    width: 60%;
+    padding: 10px;
+}
 
-        .done {
-            text-decoration: line-through;
-            color: gray;
-        }
+button {
+    padding: 10px;
+    cursor: pointer;
+    margin: 3px;
+}
 
-        .delete {
-            color: red;
-            cursor: pointer;
-        }
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
 
-        .edit {
-            color: blue;
-            cursor: pointer;
-            margin-left: 8px;
-        }
-    </style>
+    /* 动画 */
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.done {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.delete {
+    color: red;
+    cursor: pointer;
+}
+
+.edit {
+    color: blue;
+    cursor: pointer;
+}
+</style>
 </head>
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <h1>📝 TODO v4</h1>
+<h1>📝 TODO v5</h1>
 
-        <input id="taskInput" placeholder="输入任务..." />
-        <button onclick="addTask()">添加</button>
-        <button onclick="clearAll()">清空</button>
+<button onclick="toggleDark()">🌙 切换模式</button>
 
-        <ul id="taskList"></ul>
+<br><br>
 
-    </div>
+<input id="taskInput" placeholder="输入任务..." />
+<button onclick="addTask()">添加</button>
+<button onclick="clearAll()">清空</button>
 
-    <script>
+<ul id="taskList"></ul>
 
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+</div>
 
+<script>
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+render();
+
+// 🌙 黑夜模式
+function toggleDark() {
+    document.body.classList.toggle("dark");
+}
+
+// 添加任务
+function addTask() {
+    let input = document.getElementById("taskInput");
+    let value = input.value.trim();
+
+    if (!value) return;
+
+    tasks.push({
+        text: value,
+        done: false
+    });
+
+    input.value = "";
+    save();
+    render();
+}
+
+// 切换完成
+function toggleTask(index) {
+    tasks[index].done = !tasks[index].done;
+    save();
+    render();
+}
+
+// 删除
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    save();
+    render();
+}
+
+// 编辑
+function editTask(index) {
+    let newText = prompt("修改任务：", tasks[index].text);
+
+    if (newText) {
+        tasks[index].text = newText;
+        save();
         render();
+    }
+}
 
-        // 添加任务
-        function addTask() {
-            let input = document.getElementById("taskInput");
-            let value = input.value.trim();
+// 清空
+function clearAll() {
+    tasks = [];
+    save();
+    render();
+}
 
-            if (!value) return;
+// 保存
+function save() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
-            tasks.push({
-                text: value,
-                done: false
-            });
+// 渲染
+function render() {
+    let list = document.getElementById("taskList");
+    list.innerHTML = "";
 
-            input.value = "";
-            save();
-            render();
-        }
+    tasks.forEach((task, index) => {
 
-        // 切换完成状态（✔核心）
-        function toggleTask(index) {
-            tasks[index].done = !tasks[index].done;
-            save();
-            render();
-        }
+        let li = document.createElement("li");
 
-        // 删除任务
-        function deleteTask(index) {
-            tasks.splice(index, 1);
-            save();
-            render();
-        }
-
-        // 编辑任务（✔新增核心功能）
-        function editTask(index) {
-            let newText = prompt("修改任务内容：", tasks[index].text);
-
-            if (newText !== null && newText.trim() !== "") {
-                tasks[index].text = newText.trim();
-                save();
-                render();
-            }
-        }
-
-        // 清空
-        function clearAll() {
-            tasks = [];
-            save();
-            render();
-        }
-
-        // 保存
-        function save() {
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-        }
-
-        // 渲染
-        function render() {
-            let list = document.getElementById("taskList");
-            list.innerHTML = "";
-
-            tasks.forEach((task, index) => {
-
-                let li = document.createElement("li");
-
-                li.innerHTML = `
+        li.innerHTML = `
             <div>
                 <input type="checkbox" ${task.done ? "checked" : ""}
                     onchange="toggleTask(${index})">
@@ -161,18 +187,17 @@
             </div>
         `;
 
-                list.appendChild(li);
-            });
-        }
+        list.appendChild(li);
+    });
+}
 
-        // 回车添加
-        document.getElementById("taskInput")
-            .addEventListener("keydown", function (e) {
-                if (e.key === "Enter") addTask();
-            });
+// 回车
+document.getElementById("taskInput")
+.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") addTask();
+});
 
-    </script>
+</script>
 
 </body>
-
 </html>
