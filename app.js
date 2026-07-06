@@ -1,94 +1,98 @@
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+class TodoApp {
+    constructor() {
+        this.tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        this.filter = "all";
+        this.bindEvents();
+        this.render();
+    }
 
-// 🌙
-function toggleDark() {
-    document.body.classList.toggle("dark");
-}
+    addTask() {
+        let text = document.getElementById("taskInput").value.trim();
+        let tag = document.getElementById("tagInput").value.trim();
 
-// ➕
-function addTask() {
-    let text = document.getElementById("taskInput").value.trim();
-    let tag = document.getElementById("tagInput").value.trim();
+        if (!text) return;
 
-    if (!text) return;
+        this.tasks.push({
+            text,
+            tag: tag || "默认",
+            done: false
+        });
 
-    tasks.push({
-        text,
-        tag: tag || "默认",
-        done: false
-    });
+        this.save();
+        this.render();
 
-    save();
-    render();
+        document.getElementById("taskInput").value = "";
+        document.getElementById("tagInput").value = "";
+    }
 
-    document.getElementById("taskInput").value = "";
-    document.getElementById("tagInput").value = "";
-}
+    toggleTask(index) {
+        this.tasks[index].done = !this.tasks[index].done;
+        this.save();
+        this.render();
+    }
 
-// ✔
-function toggleTask(index) {
-    tasks[index].done = !tasks[index].done;
-    save();
-    render();
-}
+    deleteTask(index) {
+        this.tasks.splice(index, 1);
+        this.save();
+        this.render();
+    }
 
-// ❌
-function deleteTask(index) {
-    tasks.splice(index, 1);
-    save();
-    render();
-}
+    editTask(index) {
+        let newText = prompt("修改任务：", this.tasks[index].text);
+        if (newText) {
+            this.tasks[index].text = newText;
+            this.save();
+            this.render();
+        }
+    }
 
-// ✏️
-function editTask(index) {
-    let newText = prompt("修改任务：", tasks[index].text);
-    if (newText) {
-        tasks[index].text = newText;
-        save();
-        render();
+    save() {
+        localStorage.setItem("tasks", JSON.stringify(this.tasks));
+    }
+
+    render() {
+        let list = document.getElementById("taskList");
+        let keyword = document.getElementById("searchInput")?.value || "";
+
+        list.innerHTML = "";
+
+        this.tasks
+        .filter(t => t.text.includes(keyword) || t.tag.includes(keyword))
+        .forEach((task, index) => {
+
+            let li = document.createElement("li");
+
+            li.innerHTML = `
+                <div>
+                    <input type="checkbox"
+                        ${task.done ? "checked" : ""}
+                        onchange="app.toggleTask(${index})">
+
+                    <span class="${task.done ? 'done' : ''}"
+                          ondblclick="app.editTask(${index})">
+                        ${task.text}
+                    </span>
+
+                    <span class="tag">${task.tag}</span>
+                </div>
+
+                <div>
+                    <span class="edit" onclick="app.editTask(${index})">✏️</span>
+                    <span class="delete" onclick="app.deleteTask(${index})">❌</span>
+                </div>
+            `;
+
+            list.appendChild(li);
+        });
+    }
+
+    bindEvents() {
+        document.getElementById("taskInput")
+        .addEventListener("keydown", (e) => {
+            if (e.key === "Enter") this.addTask();
+        });
     }
 }
 
-// 💾
-function save() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-// 🔍
-function render() {
-    let list = document.getElementById("taskList");
-    let keyword = document.getElementById("searchInput").value || "";
-
-    list.innerHTML = "";
-
-    tasks
-    .filter(t => t.text.includes(keyword) || t.tag.includes(keyword))
-    .forEach((task, index) => {
-
-        let li = document.createElement("li");
-
-        li.innerHTML = `
-            <div>
-                <input type="checkbox"
-                    ${task.done ? "checked" : ""}
-                    onchange="toggleTask(${index})">
-
-                <span class="${task.done ? 'done' : ''}"
-                      ondblclick="editTask(${index})">
-                    ${task.text}
-                </span>
-
-                <span class="tag">${task.tag}</span>
-            </div>
-
-            <div>
-                <span class="edit" onclick="editTask(${index})">✏️</span>
-                <span class="delete" onclick="deleteTask(${index})">❌</span>
-            </div>
-        `;
-
-        list.appendChild(li);
-    });
-}
-
-render();
+// 🌟 全局实例
+const app = new TodoApp();
