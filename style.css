@@ -1,0 +1,56 @@
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    transition: 0.3s;
+}
+
+.dark {
+    background: #1e1e1e;
+    color: white;
+}
+
+.container {
+    max-width: 520px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dark .container {
+    background: #2c2c2c;
+}
+
+input {
+    padding: 10px;
+    margin: 3px;
+}
+
+button {
+    padding: 8px;
+    cursor: pointer;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.done {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.tag {
+    font-size: 12px;
+    background: #3498db;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.delete { color: red; cursor: pointer; }
+.edit { color: blue; cursor: pointer; }
