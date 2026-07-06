@@ -3,19 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Luis - Portfolio</title>
+    <title>TODO Pro</title>
 
     <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+        }
+
         .container {
             max-width: 500px;
             margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
             text-align: center;
-            font-family: Arial;
         }
 
         input {
-            padding: 10px;
             width: 70%;
+            padding: 10px;
         }
 
         button {
@@ -24,8 +35,15 @@
         }
 
         li {
-            text-align: left;
-            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .delete {
+            color: red;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -34,10 +52,9 @@
 
     <div class="container">
 
-        <h1>📝 TODO List</h1>
+        <h1>📝 TODO Pro</h1>
 
         <input id="taskInput" placeholder="输入任务..." />
-
         <button onclick="addTask()">添加</button>
 
         <ul id="taskList"></ul>
@@ -45,19 +62,64 @@
     </div>
 
     <script>
+
+        // 从本地读取数据
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+        // 初始化
+        render();
+
+        // 添加任务
         function addTask() {
             let input = document.getElementById("taskInput");
-            let value = input.value;
+            let value = input.value.trim();
 
             if (value === "") return;
 
-            let li = document.createElement("li");
-            li.innerText = value;
-
-            document.getElementById("taskList").appendChild(li);
+            tasks.push(value);
+            save();
 
             input.value = "";
+            render();
         }
+
+        // 删除任务
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            save();
+            render();
+        }
+
+        // 保存到本地
+        function save() {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        // 渲染列表
+        function render() {
+            let list = document.getElementById("taskList");
+            list.innerHTML = "";
+
+            tasks.forEach((task, index) => {
+                let li = document.createElement("li");
+
+                li.innerHTML = `
+            <span>${task}</span>
+            <span class="delete" onclick="deleteTask(${index})">❌</span>
+        `;
+
+                list.appendChild(li);
+            });
+        }
+
+        // 回车添加
+        document.getElementById("taskInput")
+            .addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    addTask();
+                }
+            });
+
     </script>
 
 </body>
