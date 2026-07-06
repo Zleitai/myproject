@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>TODO Pro Max</title>
+    <title>TODO v4</title>
 
     <style>
         body {
@@ -35,14 +35,10 @@
             margin: 3px;
         }
 
-        .filters {
-            text-align: center;
-            margin: 10px 0;
-        }
-
         li {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 8px;
             border-bottom: 1px solid #eee;
         }
@@ -56,6 +52,12 @@
             color: red;
             cursor: pointer;
         }
+
+        .edit {
+            color: blue;
+            cursor: pointer;
+            margin-left: 8px;
+        }
     </style>
 </head>
 
@@ -63,17 +65,11 @@
 
     <div class="container">
 
-        <h1>📝 TODO Pro Max</h1>
+        <h1>📝 TODO v4</h1>
 
         <input id="taskInput" placeholder="输入任务..." />
         <button onclick="addTask()">添加</button>
         <button onclick="clearAll()">清空</button>
-
-        <div class="filters">
-            <button onclick="setFilter('all')">全部</button>
-            <button onclick="setFilter('active')">未完成</button>
-            <button onclick="setFilter('done')">已完成</button>
-        </div>
 
         <ul id="taskList"></ul>
 
@@ -82,10 +78,10 @@
     <script>
 
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        let filter = "all";
 
         render();
 
+        // 添加任务
         function addTask() {
             let input = document.getElementById("taskInput");
             let value = input.value.trim();
@@ -102,56 +98,67 @@
             render();
         }
 
+        // 切换完成状态（✔核心）
         function toggleTask(index) {
             tasks[index].done = !tasks[index].done;
             save();
             render();
         }
 
+        // 删除任务
         function deleteTask(index) {
             tasks.splice(index, 1);
             save();
             render();
         }
 
+        // 编辑任务（✔新增核心功能）
+        function editTask(index) {
+            let newText = prompt("修改任务内容：", tasks[index].text);
+
+            if (newText !== null && newText.trim() !== "") {
+                tasks[index].text = newText.trim();
+                save();
+                render();
+            }
+        }
+
+        // 清空
         function clearAll() {
             tasks = [];
             save();
             render();
         }
 
-        function setFilter(f) {
-            filter = f;
-            render();
-        }
-
+        // 保存
         function save() {
             localStorage.setItem("tasks", JSON.stringify(tasks));
         }
 
+        // 渲染
         function render() {
             let list = document.getElementById("taskList");
             list.innerHTML = "";
 
-            let filtered = tasks.filter(task => {
-                if (filter === "all") return true;
-                if (filter === "active") return !task.done;
-                if (filter === "done") return task.done;
-            });
-
-            filtered.forEach((task, index) => {
+            tasks.forEach((task, index) => {
 
                 let li = document.createElement("li");
 
                 li.innerHTML = `
-            <span class="${task.done ? 'done' : ''}"
-                  onclick="toggleTask(${index})">
-                ${task.text}
-            </span>
+            <div>
+                <input type="checkbox" ${task.done ? "checked" : ""}
+                    onchange="toggleTask(${index})">
 
-            <span>
+                <span class="${task.done ? 'done' : ''}"
+                      ondblclick="editTask(${index})">
+                    ${task.text}
+                </span>
+            </div>
+
+            <div>
+                <span class="edit" onclick="editTask(${index})">✏️</span>
                 <span class="delete" onclick="deleteTask(${index})">❌</span>
-            </span>
+            </div>
         `;
 
                 list.appendChild(li);
