@@ -1,34 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>TODO v7</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO v9 API</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <main class="app-shell">
+        <section class="header">
+            <div>
+                <p class="eyebrow">模拟 API / 本地保存</p>
+                <h1>TODO v9 API</h1>
+            </div>
+            <button id="themeToggle" class="icon-button" type="button" aria-label="切换深色模式">月</button>
+        </section>
 
-<div class="container">
+        <form id="taskForm" class="task-form">
+            <input id="taskInput" type="text" placeholder="输入任务..." autocomplete="off" maxlength="80">
+            <input id="tagInput" type="text" placeholder="标签" autocomplete="off" maxlength="20">
+            <button type="submit">添加</button>
+        </form>
 
-<h1>🧠 TODO v7</h1>
+        <section class="toolbar">
+            <input id="searchInput" type="search" placeholder="搜索任务或标签...">
+            <div class="filters" aria-label="筛选任务">
+                <button class="filter active" type="button" data-filter="all">全部</button>
+                <button class="filter" type="button" data-filter="active">未完成</button>
+                <button class="filter" type="button" data-filter="done">已完成</button>
+            </div>
+        </section>
 
-<button onclick="toggleDark()">🌙</button>
+        <section class="stats" aria-live="polite">
+            <span id="totalCount">0 个任务</span>
+            <span id="activeCount">0 个未完成</span>
+            <button id="clearDone" class="text-button" type="button">清除已完成</button>
+        </section>
 
-<br><br>
+        <ul id="taskList" class="task-list"></ul>
+        <p id="emptyState" class="empty-state">还没有任务，先添加一个吧。</p>
+    </main>
 
-<input id="taskInput" placeholder="输入任务..." />
-<input id="tagInput" placeholder="标签" />
-<button onclick="addTask()">添加</button>
-
-<br><br>
-
-<input id="searchInput" placeholder="搜索..." oninput="render()" />
-
-<ul id="taskList"></ul>
-
-</div>
-
-<script type="module" src="app.js"></script>
-
+    <script type="module" src="app.js"></script>
 </body>
 </html>

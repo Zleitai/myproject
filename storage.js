@@ -1,7 +1,24 @@
+const TASKS_KEY = "todo.tasks.v8";
+const THEME_KEY = "todo.theme.v8";
+
 export function saveTasks(tasks) {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
 }
 
 export function loadTasks() {
-    return JSON.parse(localStorage.getItem("tasks")) || [];
+    try {
+        const rawTasks = localStorage.getItem(TASKS_KEY) || localStorage.getItem("tasks");
+        const tasks = JSON.parse(rawTasks || "[]");
+        return Array.isArray(tasks) ? tasks : [];
+    } catch {
+        return [];
+    }
+}
+
+export function saveTheme(theme) {
+    localStorage.setItem(THEME_KEY, theme);
+}
+
+export function loadTheme() {
+    return localStorage.getItem(THEME_KEY) || "light";
 }
