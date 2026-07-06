@@ -62,7 +62,15 @@
     <div class="container">
 
         <h1>👋 你好，我是 Luis</h1>
-        <p>正在学习前端开发 / Linux / Git 的开发者</p>
+
+        <div class="section">
+            <button onclick="sayHello()">点我一下</button>
+            <p id="output"></p>
+        </div>
+
+        <div class="section">
+            <p>正在学习前端开发 / Linux / Git</p>
+        </div>
 
         <div class="section">
             <h2>📌 关于我</h2>
@@ -93,9 +101,6 @@
         </div>
 
     </div>
-
-    <button onclick="sayHello()">点我一下</button>
-    <p id="output"></p>
 
     <script>
         function sayHello() {
