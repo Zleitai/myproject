@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>TODO v5</title>
+<title>TODO v6</title>
 
 <style>
 body {
@@ -17,13 +17,12 @@ body {
 }
 
 .container {
-    max-width: 500px;
+    max-width: 520px;
     margin: 50px auto;
     background: white;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: 0.3s;
 }
 
 .dark .container {
@@ -35,14 +34,23 @@ h1 {
 }
 
 input {
-    width: 60%;
+    width: 55%;
     padding: 10px;
 }
 
 button {
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
     margin: 3px;
+}
+
+.tag {
+    font-size: 12px;
+    background: #3498db;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 5px;
+    margin-left: 5px;
 }
 
 li {
@@ -51,14 +59,6 @@ li {
     align-items: center;
     padding: 8px;
     border-bottom: 1px solid #eee;
-
-    /* 动画 */
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .done {
@@ -82,15 +82,19 @@ li {
 
 <div class="container">
 
-<h1>📝 TODO v5</h1>
+<h1>🧠 TODO v6</h1>
 
-<button onclick="toggleDark()">🌙 切换模式</button>
+<button onclick="toggleDark()">🌙</button>
 
 <br><br>
 
 <input id="taskInput" placeholder="输入任务..." />
+<input id="tagInput" placeholder="标签 (学习/工作)" />
 <button onclick="addTask()">添加</button>
-<button onclick="clearAll()">清空</button>
+
+<br><br>
+
+<input id="searchInput" placeholder="搜索任务..." oninput="render()" />
 
 <ul id="taskList"></ul>
 
@@ -100,48 +104,49 @@ li {
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-render();
-
 // 🌙 黑夜模式
 function toggleDark() {
     document.body.classList.toggle("dark");
 }
 
-// 添加任务
+// ➕ 添加任务（带 tag）
 function addTask() {
-    let input = document.getElementById("taskInput");
-    let value = input.value.trim();
+    let text = document.getElementById("taskInput").value.trim();
+    let tag = document.getElementById("tagInput").value.trim();
 
-    if (!value) return;
+    if (!text) return;
 
     tasks.push({
-        text: value,
+        text,
+        tag: tag || "默认",
         done: false
     });
 
-    input.value = "";
     save();
+
+    document.getElementById("taskInput").value = "";
+    document.getElementById("tagInput").value = "";
+
     render();
 }
 
-// 切换完成
+// ✔ 切换完成状态
 function toggleTask(index) {
     tasks[index].done = !tasks[index].done;
     save();
     render();
 }
 
-// 删除
+// ❌ 删除
 function deleteTask(index) {
     tasks.splice(index, 1);
     save();
     render();
 }
 
-// 编辑
+// ✏ 编辑
 function editTask(index) {
     let newText = prompt("修改任务：", tasks[index].text);
-
     if (newText) {
         tasks[index].text = newText;
         save();
@@ -149,36 +154,39 @@ function editTask(index) {
     }
 }
 
-// 清空
-function clearAll() {
-    tasks = [];
-    save();
-    render();
-}
-
-// 保存
+// 💾 保存
 function save() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// 渲染
+// 🔍 搜索 + 渲染（核心升级）
 function render() {
     let list = document.getElementById("taskList");
+    let keyword = document.getElementById("searchInput").value || "";
+
     list.innerHTML = "";
 
-    tasks.forEach((task, index) => {
+    let filtered = tasks.filter(task =>
+        task.text.includes(keyword) ||
+        task.tag.includes(keyword)
+    );
+
+    filtered.forEach((task, index) => {
 
         let li = document.createElement("li");
 
         li.innerHTML = `
             <div>
-                <input type="checkbox" ${task.done ? "checked" : ""}
+                <input type="checkbox"
+                    ${task.done ? "checked" : ""}
                     onchange="toggleTask(${index})">
 
                 <span class="${task.done ? 'done' : ''}"
                       ondblclick="editTask(${index})">
                     ${task.text}
                 </span>
+
+                <span class="tag">${task.tag}</span>
             </div>
 
             <div>
