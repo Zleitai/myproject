@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Luis - Portfolio</title>
@@ -18,7 +19,7 @@
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -58,49 +59,50 @@
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <h1>👋 你好，我是 Luis</h1>
-    <p>正在学习前端开发 / Linux / Git 的开发者</p>
+        <h1>👋 你好，我是 Luis</h1>
+        <p>正在学习前端开发 / Linux / Git 的开发者</p>
 
-    <div class="section">
-        <h2>📌 关于我</h2>
-        <p>我正在系统学习 Web 开发，并构建自己的项目作品集。</p>
+        <div class="section">
+            <h2>📌 关于我</h2>
+            <p>我正在系统学习 Web 开发，并构建自己的项目作品集。</p>
+        </div>
+
+        <div class="section">
+            <h2>🧠 技能</h2>
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Linux</span>
+            <span class="tag">Git</span>
+        </div>
+
+        <div class="section">
+            <h2>📁 项目</h2>
+            <p>✔ myproject（第一个 GitHub 项目）</p>
+        </div>
+
+        <div class="section">
+            <h2>🔗 GitHub</h2>
+            <p>
+                <a href="https://github.com/Zleitai" target="_blank">
+                    https://github.com/Zleitai
+                </a>
+            </p>
+        </div>
+
     </div>
 
-    <div class="section">
-        <h2>🧠 技能</h2>
-        <span class="tag">HTML</span>
-        <span class="tag">CSS</span>
-        <span class="tag">JavaScript</span>
-        <span class="tag">Linux</span>
-        <span class="tag">Git</span>
-    </div>
+    <button onclick="sayHello()">点我一下</button>
+    <p id="output"></p>
 
-    <div class="section">
-        <h2>📁 项目</h2>
-        <p>✔ myproject（第一个 GitHub 项目）</p>
-    </div>
+    <script>
+        function sayHello() {
+            document.getElementById("output").innerText = "你好 Luis 👋";
+        }
+    </script>
 
-    <div class="section">
-        <h2>🔗 GitHub</h2>
-        <p>
-            <a href="https://github.com/Zleitai" target="_blank">
-                https://github.com/Zleitai
-            </a>
-        </p>
-    </div>
-
-</div>
-
-<button onclick="sayHello()">点我一下</button>
-
-<p id="output"></p>
-
-<script>
-function sayHello() {
-    document.getElementById("output").innerText = "你好 Luis 👋";
-}
-</script>
 </body>
+
 </html>
